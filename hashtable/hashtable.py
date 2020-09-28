@@ -6,6 +6,8 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+    def __repr__(self):
+        return f"HashEntry({repr(self.key)},{repr(self.value)}"
 
 
 # Hash table can't have fewer than this many slots
@@ -22,7 +24,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity if capacity > 8 else 8
+        self.table = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -35,6 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +48,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
     def fnv1(self, key):
@@ -54,6 +59,11 @@ class HashTable:
         """
 
         # Your code here
+        hashValue = 14695981039346656037
+        for c in key:
+            hashValue *= 1099511628211
+            hashValue = hashValue ^ ord(c)
+        return hashValue
 
 
     def djb2(self, key):
@@ -63,6 +73,7 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        pass
 
 
     def hash_index(self, key):
@@ -70,8 +81,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -82,6 +93,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.table[index] = value
 
 
     def delete(self, key):
@@ -93,6 +106,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.table[index] = None
 
 
     def get(self, key):
@@ -104,6 +119,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        return self.table[index]
 
 
     def resize(self, new_capacity):
@@ -114,6 +131,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
 
@@ -140,14 +158,14 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     print("")
