@@ -7,7 +7,7 @@ class HashTableEntry:
         self.value = value
         self.next = None
     def __repr__(self):
-        return f"HashEntry({repr(self.key)},{repr(self.value)}"
+        return f"HashEntry({repr(self.key)},{repr(self.value)})"
 
 
 # Hash table can't have fewer than this many slots
@@ -26,6 +26,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity if capacity > 8 else 8
         self.table = [None] * self.capacity
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -63,6 +64,7 @@ class HashTable:
         for c in key:
             hashValue *= 1099511628211
             hashValue = hashValue ^ ord(c)
+            hashValue &= 0xffffffffffffffff
         return hashValue
 
 
@@ -73,7 +75,11 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
-        pass
+        hashValue = 5381
+        for c in key:
+            hashValue = hashValue * 33 + ord(c)
+            hashValue &= 0xffffffff
+        return hashValue
 
 
     def hash_index(self, key):
@@ -81,8 +87,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % self.capacity
-        # return self.djb2(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
+        return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -94,7 +100,25 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.table[index] = value
+        entry = self.table[index]
+        # If there is nothing at the index add the new pair
+        if not entry:
+            self.size += 1
+            self.table[index] = HashTableEntry(key, value)
+        # Otherwise we need to find the end of the linked list or overwrite entry
+        else:
+            # Overwrite if they have the same key
+            if entry.key == key:
+                self.table[index] = HashTableEntry(key, value)
+            # Find the end of the linked list, if we find an entry with the same key overwrite it
+            while entry.next:
+                if entry.key == key:
+                    entry = HashTableEntry(key, value)
+                    return
+                entry = entry.next
+            # Once we've found the end of the list add the new entry
+            self.size += 1
+            entry.next = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -107,7 +131,43 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.table[index] = None
+        if not self.table[index]: # Nothing exists at this index
+            print(key, "does not exist, nothing was deleted")
+
+        else: # Something exists at this index
+
+            # Store the current and previous entries
+            previousEntry = None
+            entry = self.table[index]
+
+            # We're at the start of the linked list and a next value does not exists
+            if not entry.next:
+                self.size -= 1
+                self.table[index] = None
+                return entry.value
+                
+            # Loop while a next entry exists
+            while entry.next: 
+
+                # If we find the key we're looking for
+                if entry.key == key:
+
+                    # We're at the start of the linked list and a next value exists
+                    if not previousEntry and entry.next:
+                        self.size -= 1
+                        self.table[index] = entry.next
+                        return entry.value
+
+                    # We're in the middle of the linked list and we knit the neighbors of the removed item together
+                    else:
+                        self.size -= 1
+                        previousEntry.next = entry.next
+
+                previousEntry = entry
+                entry = entry.next
+
+            # If we never find the key we return nothing
+            print(key, "does not exist, nothing was deleted")
 
 
     def get(self, key):
@@ -120,7 +180,25 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        return self.table[index]
+        if not self.table[index]: # Nothing exists at this index key doesn't exist
+            return None
+        else: # Something exists at this index
+            entry = self.table[index]
+
+            # This is for when the first entry is what we want but it has no entry.next
+            if entry.key == key and not entry.next:
+                return entry.value
+            
+            # Loop until we're at the end of the list
+            while entry.next:
+                # If we find the key we want return it
+                if entry.key == key:
+                    return entry.value
+                # Otherwise move down the list
+                entry = entry.next
+            
+            # Didn't find anything with the key
+            return None
 
 
     def resize(self, new_capacity):
@@ -131,7 +209,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        if (self.size / self.capacity) > 0.7:
+            self.capacity = self.capacity * 2
+            newTable = self.capacity * [None]
+            
+
 
 
 
