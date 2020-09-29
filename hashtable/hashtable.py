@@ -105,6 +105,7 @@ class HashTable:
         if not entry:
             self.size += 1
             self.table[index] = HashTableEntry(key, value)
+            # self.resize()
         # Otherwise we need to find the end of the linked list or overwrite entry
         else:
             # Overwrite if they have the same key
@@ -119,6 +120,7 @@ class HashTable:
             # Once we've found the end of the list add the new entry
             self.size += 1
             entry.next = HashTableEntry(key, value)
+            # self.resize()
 
 
     def delete(self, key):
@@ -147,7 +149,7 @@ class HashTable:
                 return entry.value
                 
             # Loop while a next entry exists
-            while entry.next: 
+            while entry: 
 
                 # If we find the key we're looking for
                 if entry.key == key:
@@ -184,13 +186,9 @@ class HashTable:
             return None
         else: # Something exists at this index
             entry = self.table[index]
-
-            # This is for when the first entry is what we want but it has no entry.next
-            if entry.key == key and not entry.next:
-                return entry.value
             
             # Loop until we're at the end of the list
-            while entry.next:
+            while entry:
                 # If we find the key we want return it
                 if entry.key == key:
                     return entry.value
@@ -201,7 +199,7 @@ class HashTable:
             return None
 
 
-    def resize(self, new_capacity):
+    def resize(self, new_capacity = None):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
@@ -209,10 +207,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if (self.size / self.capacity) > 0.7:
-            self.capacity = self.capacity * 2
-            newTable = self.capacity * [None]
-            
+        if (self.size / self.capacity) > 0.7 or new_capacity:
+            # Double capacity
+            self.capacity = new_capacity if new_capacity else self.capacity * 2
+            # Store the old table
+            oldTable = self.table
+            # Create a new table with new capacity
+            self.table = self.capacity * [None]
+            # Loop through all the old entries and add them to the new 
+            for entry in oldTable:
+                # Loop while not at the end of the linked list
+                while entry:
+                    self.put(entry.key, entry.value)
+                    entry = entry.next
+                
+
 
 
 
