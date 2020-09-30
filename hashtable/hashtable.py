@@ -24,7 +24,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = capacity if capacity > 8 else 8
+        self.capacity = capacity if capacity > MIN_CAPACITY else MIN_CAPACITY
         self.table = [None] * self.capacity
         self.size = 0
 
@@ -105,7 +105,7 @@ class HashTable:
         if not entry:
             self.size += 1
             self.table[index] = HashTableEntry(key, value)
-            # self.resize()
+            self.resize()
         # Otherwise we need to find the end of the linked list or overwrite entry
         else:
             # Overwrite if they have the same key
@@ -120,7 +120,7 @@ class HashTable:
             # Once we've found the end of the list add the new entry
             self.size += 1
             entry.next = HashTableEntry(key, value)
-            # self.resize()
+            self.resize()
 
 
     def delete(self, key):
@@ -207,9 +207,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if (self.size / self.capacity) > 0.7 or new_capacity:
-            # Double capacity
-            self.capacity = new_capacity if new_capacity else self.capacity * 2
+        # if (self.size / self.capacity) > 0.7 or new_capacity or ((self.size / self.capacity) < 0.2 and self.capacity > 8):
+        if new_capacity:
+            if new_capacity:
+                self.capacity = new_capacity
+            # elif (self.size / self.capacity) < 0.2 and self.capacity > 8:
+            #     self.capacity = int(self.capacity / 2)
+            # else: 
+            #     self.capacity = self.capacity * 2
             # Store the old table
             oldTable = self.table
             # Create a new table with new capacity
