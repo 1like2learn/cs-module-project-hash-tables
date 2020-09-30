@@ -1,5 +1,19 @@
 def no_dups(s):
     # Your code here
+    cache = {}
+    stringArr = s.split()
+    for word in stringArr:
+        if word in cache:
+            continue
+        else:
+            cache[word] = ""
+    returnString = ""
+    for i,word in enumerate(cache.keys()):
+        if i == 0:
+            returnString += word
+        else:
+            returnString += " " + word
+    return returnString
 
 
 

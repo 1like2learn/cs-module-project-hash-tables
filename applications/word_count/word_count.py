@@ -1,5 +1,43 @@
+charFilter = {
+    ':': '',
+    ';': '',
+    ',': '',
+    '.': '',
+    '-': '',
+    '+': '',
+    '=': '',
+    '/': '',
+    '\\': '',
+    '|': '',
+    '[': '',
+    ']': '',
+    '{': '',
+    '}': '',
+    '(': '',
+    ')': '',
+    '*': '',
+    '^': '',
+    '&': '',
+    '\"': '',
+}
 def word_count(s):
     # Your code here
+    s = s.casefold()
+    filteredString = ""
+    for char in s:
+        if char in charFilter:
+            filteredString += charFilter[char]
+        else:
+            filteredString += char
+    
+    wordArr = filteredString.split()
+    wordDict = {}
+    for word in wordArr:
+        if word in wordDict:
+            wordDict[word] += 1
+        else:
+            wordDict[word] = 1
+    return wordDict
 
 
 
