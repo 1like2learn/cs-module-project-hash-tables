@@ -1,14 +1,19 @@
 def no_dups(s):
     # Your code here
-    cache = {}
+    cache = set()
+    # Get a list of words in the string
     stringArr = s.split()
+
+    # If the word is in the set ignore it. Otherwise add it to the cache
     for word in stringArr:
         if word in cache:
             continue
         else:
-            cache[word] = ""
+            cache.add(word)
+    
+    # Add every word to the return string with a space before it if it's not the first word
     returnString = ""
-    for i,word in enumerate(cache.keys()):
+    for i,word in enumerate(cache):
         if i == 0:
             returnString += word
         else:

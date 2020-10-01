@@ -11,6 +11,7 @@ def slowfun_too_slow(x, y):
     return v
 
 cache = {}
+# In the provided range create a cache of results of slowfun_too_slow
 for i in range(2, 14):
     for j in range(3, 6):
         cache[f'{i},{j}'] = slowfun_too_slow(i,j)
@@ -21,6 +22,7 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
+    # Return the result from the cache
     return cache[f'{x},{y}']
 
 

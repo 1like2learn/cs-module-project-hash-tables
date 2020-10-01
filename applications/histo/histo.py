@@ -61,6 +61,7 @@ for char in robin:
   else: 
     robinFiltered += char
 
+# Create a list of words from robinFiltered
 words = robinFiltered.split()
 histogram = {}
 
@@ -70,6 +71,7 @@ for word in words:
     histogram[word] += 1
   else:
     histogram[word] = 1
+  
 # Get a list of touples that coincides to histogram's key value pairs
 listHistogramItems = list(histogram.items())
 listHistogramItems.sort(key = lambda t: t[1], reverse = True)
