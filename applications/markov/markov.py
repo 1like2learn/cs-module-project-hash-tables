@@ -32,7 +32,13 @@ def constructSentence():
     # Our output and current word are randomly taken from startWords
     output = word = random.choice(startWords)
     # Loop while the length of the word is less than one or word is an end word
-    while len(word) < 1 or (not word[-1] in endingPunctuation and not word[-2] in endingPunctuation):
+    while True:
+        if word[-1] in endingPunctuation:
+            break
+        if len(word) > 1:
+            if word[-2] in endingPunctuation:
+                break
+
         # Make word the next word from nextWords
         word = random.choice(nextWords[word])
         # Add the next word to the output
