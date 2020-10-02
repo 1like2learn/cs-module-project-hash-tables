@@ -74,6 +74,7 @@ for word in words:
   
 # Get a list of touples that coincides to histogram's key value pairs
 listHistogramItems = list(histogram.items())
+listHistogramItems.sort(key = lambda t: t[0])
 listHistogramItems.sort(key = lambda t: t[1], reverse = True)
 
 # Print the sorted list where every hashmark represents an instance of a 
